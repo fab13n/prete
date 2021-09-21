@@ -12,3 +12,8 @@
       an always-accessible `current_user` method.
     * Exempt `sessions_controller` and parts of `users_controller` from session checking.
     * Display logged in user in `home#index`.
+
+* My components: goods, loans and person.
+    * goods have a owner, a name and a text description; images will be added later.
+        * `rails generate scaffold Good name:string description:string owner:references`
+        * `rails db:migrate`
