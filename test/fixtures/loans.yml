@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  good: one
+  borrowed_at: 2021-09-22 00:22:17
+  due_at: 2021-09-22 00:22:17
+  owner_notes: MyString
+  borrower_notes: MyString
+
+two:
+  user: two
+  good: two
+  borrowed_at: 2021-09-22 00:22:17
+  due_at: 2021-09-22 00:22:17
+  owner_notes: MyString
+  borrower_notes: MyString

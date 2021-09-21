@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_21_160612) do
+ActiveRecord::Schema.define(version: 2021_09_21_222217) do
 
   create_table "goods", force: :cascade do |t|
     t.string "name"
@@ -19,6 +19,19 @@ ActiveRecord::Schema.define(version: 2021_09_21_160612) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_goods_on_user_id"
+  end
+
+  create_table "loans", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "good_id", null: false
+    t.datetime "borrowed_at"
+    t.datetime "due_at"
+    t.string "owner_notes"
+    t.string "borrower_notes"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["good_id"], name: "index_loans_on_good_id"
+    t.index ["user_id"], name: "index_loans_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -30,4 +43,6 @@ ActiveRecord::Schema.define(version: 2021_09_21_160612) do
   end
 
   add_foreign_key "goods", "users"
+  add_foreign_key "loans", "goods"
+  add_foreign_key "loans", "users"
 end
