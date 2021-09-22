@@ -17,7 +17,7 @@
       <tr>
         <td><%= good.name %></td>
         <td><%= good.description %></td>
-        <td><%= good.user_id %></td>
+        <td><%= good.user.email %></td>
         <td><%= link_to 'Show', good %></td>
         <td><%= link_to 'Edit', edit_good_path(good) %></td>
         <td><%= link_to 'Destroy', good, method: :delete, data: { confirm: 'Are you sure?' } %></td>
