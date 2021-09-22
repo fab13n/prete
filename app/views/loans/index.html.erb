@@ -1,3 +1,28 @@
+<% content_for :javascript_includes do %>
+  <script type="text/javascript">
+    async function returnLoan(id) {
+      const fd = new FormData();
+      fd.append('returned_at', 'true');
+      const response = await fetch('/loan/'+id, {
+        method: 'PATCH',
+        body: fd,
+        headers: {'X-Requested-With': 'XMLHttpRequest'},
+      });
+      console.log(response);
+    }
+
+    addEventListener("load", () => {
+      document.querySelectorAll("a[data-return-loan]").forEach((element) => {
+        element.addEventListener("click", (event) => {
+          event.preventDefault();
+          const {returnLoan} = element.dataset;
+          console.log("Request return of loan", returnLoan);
+        });
+      });
+    });
+
+  </script>
+<% end %>
 <p id="notice"><%= notice %></p>
 
 <h1>Loans</h1>
@@ -18,8 +43,8 @@
   <tbody>
     <% @loans.each do |loan| %>
       <tr>
-        <td><%= loan.user_id %></td>
-        <td><%= loan.good_id %></td>
+        <td><%= loan.user.email %></td>
+        <td><%= loan.good.name %></td>
         <td><%= loan.borrowed_at %></td>
         <td><%= loan.due_at %></td>
         <td><%= loan.owner_notes %></td>
@@ -27,6 +52,7 @@
         <td><%= link_to 'Show', loan %></td>
         <td><%= link_to 'Edit', edit_loan_path(loan) %></td>
         <td><%= link_to 'Destroy', loan, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><a href="#" data-return-loan="<%= loan.id %>">Return</a></td>
       </tr>
     <% end %>
   </tbody>
