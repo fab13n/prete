@@ -1,6 +1,6 @@
 _Prête_ design notes
 ====================
-
+ 
 Prête is:
 
 1. my first RoR project

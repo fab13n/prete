@@ -17,3 +17,24 @@
     * goods have a owner, a name and a text description; images will be added later.
         * `rails generate scaffold Good name:string description:string owner:references`
         * `rails db:migrate`
+    * Complete owner association:
+        * `models/user has_many: :goods`
+        * `models/good belongs_to :user`
+    * Loans:
+        * `ails generate scaffold Loan user:references good:references borrowed_at:datetime due_at:datetime owner_notes:string borrower_notes:string`
+        * `User has_many :loans`
+        * `Good has_many :loans`
+        * Change foreign key fields into `collection_select` in `_form.erb`
+        * Change `text_field` into `text_area` in the same
+        * `rails db:migrate`
+    * Persons: out of MVP scope, potentially linked to a user account, carries first_name last_name and email 
+      (transferred from User).
+  
+  * Tune API:
+    * Loans need a return date `returned_at`, initially null.
+        * `rails generate migration add_returned_at_to_loans returned_at:datetime`
+        * `rails db:migrate`
+    * Create an API to set `returned_at`:
+        * Need some HTML on the index page:
+            * Remove `if current_user` cruft, we're redirected unless logged in
+            * 

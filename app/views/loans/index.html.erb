@@ -1,22 +1,30 @@
 <% content_for :javascript_includes do %>
   <script type="text/javascript">
-    async function returnLoan(id) {
-      const fd = new FormData();
-      fd.append('returned_at', 'true');
-      const response = await fetch('/loan/'+id, {
+
+    let csrfToken = null;  // will be set when document is ready
+
+    async function DoReturnLoan(id) {
+      const response = await fetch('/loans/'+id, {
         method: 'PATCH',
-        body: fd,
-        headers: {'X-Requested-With': 'XMLHttpRequest'},
-      });
-      console.log(response);
+        body: JSON.stringify({returned_at: true}),
+        headers: {
+          "X-CSRF-Token": csrfToken,
+          'X-Requested-With': 'XMLHttpRequest', 
+          "Content-Type": "application/json"
+      }});
+      if(response.ok) {
+        // TODO query and display the return date instead
+        //location.reload();
+      }
     }
 
     addEventListener("load", () => {
+      csrfToken = document.querySelector("[name='csrf-token']").content
       document.querySelectorAll("a[data-return-loan]").forEach((element) => {
         element.addEventListener("click", (event) => {
           event.preventDefault();
           const {returnLoan} = element.dataset;
-          console.log("Request return of loan", returnLoan);
+          DoReturnLoan(returnLoan);
         });
       });
     });
@@ -34,9 +42,8 @@
       <th>Good</th>
       <th>Borrowed at</th>
       <th>Due at</th>
-      <th>Owner notes</th>
-      <th>Borrower notes</th>
-      <th colspan="3"></th>
+      <th>Returned?</th>
+      <th colspan="4"></th>
     </tr>
   </thead>
 
@@ -47,8 +54,7 @@
         <td><%= loan.good.name %></td>
         <td><%= loan.borrowed_at %></td>
         <td><%= loan.due_at %></td>
-        <td><%= loan.owner_notes %></td>
-        <td><%= loan.borrower_notes %></td>
+        <td><%= loan.returned_at %></td>
         <td><%= link_to 'Show', loan %></td>
         <td><%= link_to 'Edit', edit_loan_path(loan) %></td>
         <td><%= link_to 'Destroy', loan, method: :delete, data: { confirm: 'Are you sure?' } %></td>
