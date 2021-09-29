@@ -38,7 +38,7 @@ class LoansController < ApplicationController
   def update
     respond_to do |format|
       p = loan_params
-      if p[:returned_at] == true
+      if p[:returned_at] == true and @loan.returned_at == nil
         p[:returned_at] = DateTime.now
       end
       if @loan.update(p)

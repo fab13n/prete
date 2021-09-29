@@ -34,7 +34,11 @@
     * Loans need a return date `returned_at`, initially null.
         * `rails generate migration add_returned_at_to_loans returned_at:datetime`
         * `rails db:migrate`
+        * rajouter le bon champ dans `_form.html.erb`, `_loan.json.jbuilder`, `index.html.erb`
+    * Need some HTML on the index page:
+        * Remove `if current_user` cruft, we're redirected unless logged in
+        * Links to other index pages
     * Create an API to set `returned_at`:
-        * Need some HTML on the index page:
-            * Remove `if current_user` cruft, we're redirected unless logged in
-            * 
+        * Add an entry point in `application.html.erb` to insert JavaScript and CSS in it
+        * In loans index, change the rendering of `returned_at`: propose an action to return it now if nil
+        * In `loans_controller`, change `returned_at=true` into the current datetime before processing an update.

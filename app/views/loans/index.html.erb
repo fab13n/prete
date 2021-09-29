@@ -1,4 +1,4 @@
-<% content_for :javascript_includes do %>
+<% content_for :header_includes do %>
   <script type="text/javascript">
 
     let csrfToken = null;  // will be set when document is ready
@@ -10,12 +10,16 @@
         headers: {
           "X-CSRF-Token": csrfToken,
           'X-Requested-With': 'XMLHttpRequest', 
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Accept": "application/json",
       }});
-      if(response.ok) {
-        // TODO query and display the return date instead
-        //location.reload();
+      if(! response.ok) {
+        console.log(response);
+        alert("Failed to update on server!");
       }
+      const json = await response.json();
+      const {returned_at} = json;
+      document.querySelector(`tr.loan-${id} td.returned-at`).innerHTML = returned_at;
     }
 
     addEventListener("load", () => {
@@ -38,27 +42,34 @@
 <table>
   <thead>
     <tr>
-      <th>User</th>
+      <th>Borrower</th>
       <th>Good</th>
       <th>Borrowed at</th>
       <th>Due at</th>
       <th>Returned?</th>
-      <th colspan="4"></th>
+      <th colspan="3"></th>
     </tr>
   </thead>
 
   <tbody>
     <% @loans.each do |loan| %>
-      <tr>
-        <td><%= loan.user.email %></td>
-        <td><%= loan.good.name %></td>
-        <td><%= loan.borrowed_at %></td>
-        <td><%= loan.due_at %></td>
-        <td><%= loan.returned_at %></td>
-        <td><%= link_to 'Show', loan %></td>
-        <td><%= link_to 'Edit', edit_loan_path(loan) %></td>
-        <td><%= link_to 'Destroy', loan, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-        <td><a href="#" data-return-loan="<%= loan.id %>">Return</a></td>
+      <tr class="loan-<%= loan.id %>">
+        <td class="email"><%= loan.user.email %></td>
+        <td class="name"><%= loan.good.name %></td>
+        <td class="borrowed-at"><%= loan.borrowed_at %></td>
+        <td class="due-at"><%= loan.due_at %></td>
+        <td class="returned-at">
+          <% if loan.returned_at %>
+          <%= loan.returned_at %>
+          <% else %>
+          <a href="#" data-return-loan="<%= loan.id %>">Return now!</a>
+          <% end %>
+        </td>
+        <td class="show-action"><%= link_to 'Show', loan %></td>
+        <td class="edit-action"><%= link_to 'Edit', edit_loan_path(loan) %></td>
+        <td class="destroy-action">
+          <%= link_to 'Destroy', loan, method: :delete, data: { confirm: 'Are you sure?' } %>
+        </td>
       </tr>
     <% end %>
   </tbody>
