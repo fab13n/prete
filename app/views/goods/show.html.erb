@@ -1,9 +1,24 @@
+<% content_for :header_includes do %>
+  <style type="text/css">
+  img.good-picture {
+    width: 320px;
+    height: 240px;
+  }
+  </style>
+<% end %>
+
 <p id="notice"><%= notice %></p>
 
 <p>
   <strong>Name:</strong>
   <%= @good.name %>
 </p>
+
+<% if @good.picture.attached? %>
+  <img class="good-picture" src='<%= (url_for(@good.picture)) %>'>
+<% else %>
+<p>(no picture yet)</p>
+<% end %>
 
 <p>
   <strong>Description:</strong>
