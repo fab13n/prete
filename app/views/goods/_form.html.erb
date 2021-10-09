@@ -1,3 +1,69 @@
+<% content_for :header_includes do %>
+  <script type="text/javascript">
+    let state = {
+      width: 320,
+      height: 200,
+      streaming: false
+    };
+
+    function startup() {
+        ['video', 'canvas', 'photo', 'startbutton'].forEach(name => { 
+        state[name] = document.getElementById(name);
+      });
+
+      navigator.mediaDevices
+      .getUserMedia({video: true, audio: false})
+      .then(stream => {
+          state.video.srcObject = stream;
+          state.video.play();
+      })
+      .catch(err => {
+          console.log("An error occurred: " + err);
+      });
+
+      state.video.addEventListener('canplay', ev => {
+        if(!state.streaming) {
+          state.height = state.video.videoHeight / (state.video.videoWidth / state.width);
+          ['video', 'canvas'].forEach(id =>
+            ['width', 'height'].forEach(field =>
+              state[id].setAttribute(field, state[field])));
+          state.streaming = true;
+        }
+      }, false);
+
+      state.startbutton.addEventListener('click', ev => {
+        takepicture();
+        ev.preventDefault();
+      }, false);
+      
+      clearphoto();
+    }
+
+    function clearphoto() {
+      var context = state.canvas.getContext('2d');
+      context.fillStyle = "#AAA";
+      context.fillRect(0, 0, state.canvas.width, state.canvas.height);
+      var data = state.canvas.toDataURL('image/png');
+      //photo.setAttribute('src', data);
+    }
+    
+    function takepicture() {
+      var context = canvas.getContext('2d');
+      if(state.width && state.height) {
+        state.canvas.width = state.width;
+        state.canvas.height = state.height;
+        context.drawImage(state.video, 0, 0, state.width, state.height);
+        let data = canvas.toDataURL('image/png');
+        console.log(data);
+      } else {
+        clearphoto();
+      }
+    }
+
+    window.addEventListener('load', startup, false);
+  </script>
+<% end %>
+
 <%= form_with(model: good) do |form| %>
   <% if good.errors.any? %>
     <div id="error_explanation">
@@ -29,7 +95,19 @@
   <div class="field">
     <%= form.label :picture %>
     <%= form.file_field :picture %>
+
+    <div class="camera">
+      <video id="video">Pas de photo</video>
+      <button id="startbutton">Prendre une photo</button>
+    </div>
+    <canvas id="canvas"></canvas>
+    <!--
+    <div class="output">
+      <img id="photo" alt="The screen capture will appear in this box.">
+    </div>
+    -->
   </div>
+
 
   <div class="actions">
     <%= form.submit %>
